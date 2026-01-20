@@ -1,4 +1,3 @@
-
 import streamlit as st
 import sqlalchemy as sa
 from sqlalchemy.orm import sessionmaker, declarative_base
@@ -12,7 +11,7 @@ st.set_page_config(page_title="HYDRA COFRE v1.0", page_icon="🐉", layout="wide
 st.markdown("""
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap');
-        
+       
         :root {
             --primary: #ff0090;
             --primary-glow: rgba(255, 0, 144, 0.4);
@@ -20,25 +19,21 @@ st.markdown("""
             --card-bg: rgba(18, 18, 18, 0.7);
             --border: rgba(255, 255, 255, 0.08);
         }
-
         .stApp {
             background-color: var(--bg);
-            background-image: 
+            background-image:
                 radial-gradient(circle at 10% 10%, rgba(255, 0, 144, 0.08) 0%, transparent 30%),
                 radial-gradient(circle at 90% 90%, rgba(0, 212, 255, 0.05) 0%, transparent 30%);
             color: #ffffff;
             font-family: 'Plus Jakarta Sans', sans-serif;
         }
-
         [data-testid="stHeader"], [data-testid="stToolbar"] { visibility: hidden; }
-
         /* Typography */
         h1, h2, h3 {
             font-family: 'Plus Jakarta Sans', sans-serif;
             font-weight: 800 !important;
             letter-spacing: -1px;
         }
-
         /* Glass Cards */
         .hydra-card {
             background: var(--card-bg);
@@ -55,7 +50,6 @@ st.markdown("""
             transform: translateY(-4px);
             box-shadow: 0 20px 40px rgba(0,0,0,0.4);
         }
-
         /* Neon Buttons */
         .stButton>button {
             width: 100%;
@@ -75,7 +69,6 @@ st.markdown("""
             box-shadow: 0 12px 24px var(--primary-glow) !important;
             transform: scale(1.02);
         }
-
         /* Metrics */
         div[data-testid="stMetric"] {
             background: rgba(255,255,255,0.03);
@@ -90,19 +83,17 @@ st.markdown("""
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-
         /* Inputs */
         div[data-baseweb="input"] {
             background-color: rgba(0,0,0,0.2) !important;
             border-radius: 14px !important;
             border: 1px solid var(--border) !important;
         }
-        
+       
         .magenta-glow {
             color: var(--primary);
             text-shadow: 0 0 20px var(--primary-glow);
         }
-
         .transaction-row {
             display: flex;
             justify-content: space-between;
@@ -110,7 +101,7 @@ st.markdown("""
             padding: 16px 0;
             border-bottom: 1px solid rgba(255,255,255,0.05);
         }
-        
+       
         /* Hide scrollbar */
         ::-webkit-scrollbar { width: 5px; }
         ::-webkit-scrollbar-track { background: transparent; }
@@ -120,7 +111,6 @@ st.markdown("""
 
 # --- BANCO DE DADOS ---
 Base = declarative_base()
-
 class User(Base):
     __tablename__ = 'users'
     id = sa.Column(sa.Integer, primary_key=True)
@@ -178,13 +168,13 @@ if st.session_state.user is None:
     with col2:
         st.markdown("""
             <div style="text-align: center; margin-bottom: 40px;">
-                <img src="https://media.discordapp.net/attachments/1111490812069564436/1462884504803741839/image.png?ex=6970799d&is=696f281d&hm=74cf59715d4bfacc714f84212886159efa41072063f6c8d11422809d36327bea&=&format=webp&quality=lossless" 
+                <img src="https://media.discordapp.net/attachments/1111490812069564436/1462884504803741839/image.png?ex=6970799d&is=696f281d&hm=74cf59715d4bfacc714f84212886159efa41072063f6c8d11422809d36327bea&=&format=webp&quality=lossless"
                      style="width: 100px; filter: drop-shadow(0 0 20px var(--primary-glow)); border-radius: 50%; margin-bottom: 20px;">
                 <h1 style="font-size: 2.8rem; margin:0;">HYDRA <span class="magenta-glow">FINANCES™</span></h1>
                 <p style="color: #444; font-family: 'JetBrains Mono'; font-size: 12px; letter-spacing: 4px;">SECURYT LOGIN SYSTEM</p>
             </div>
         """, unsafe_allow_html=True)
-        
+       
         with st.container():
             u_in = st.text_input("IDENTIFIER")
             p_in = st.text_input("ACCESS KEY", type="password")
@@ -202,7 +192,7 @@ if st.session_state.user is None:
 else:
     user = st.session_state.user
     conf = get_settings()
-    
+   
     # Top Navbar Flutuante
     st.markdown(f"""
         <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; background: rgba(255,255,255,0.02); border-radius: 20px; border: 1px solid var(--border); margin-bottom: 30px;">
@@ -216,21 +206,37 @@ else:
         </div>
     """, unsafe_allow_html=True)
 
+selected_date_raw = st.date_input(
+    label="DATA DO REGISTRO",
+    value=datetime.today(),
+    key="data_historico"
+)
+
+# Mostra a data no formato brasileiro
+if isinstance(selected_date_raw, datetime):
+    selected_date = selected_date_raw.date()
+    st.markdown(f"""
+        <div style="font-size: 15px; color: var(--primary); font-weight: 600; margin: 10px 0;">
+            📅 {selected_date.strftime('%d/%m/%Y')}
+        </div>
+    """, unsafe_allow_html=True)
+else:
+    selected_date = selected_date_raw    
+    
     # Grid de Conteúdo
     col_input, col_stats = st.columns([1, 2.2])
-
     with col_input:
         st.markdown("<p style='font-size: 22px; font-weight: 800; color: #666666; letter-spacing: 2px; text-transform: uppercase;'>Terminal de Lavagem</p>", unsafe_allow_html=True)
-        
+       
         with st.form("lavagem_ultra", clear_on_submit=True):
             f_client = st.text_input("ORG / CLIENTE", placeholder="Ex: Vagos")
             f_amount = st.number_input("QUANTIA SUJA (R$)", min_value=0.0, step=50000.0)
-            
+           
             sug = int((f_amount / 1000000) * 5) if f_amount > 0 else 0
             f_bleach = st.number_input(f"ALVEJANTES", min_value=0, value=sug)
-            
-            f_cat = st.segmented_control("MODO", ["Pista", "Produtos"], default="Pista")
-            
+           
+            f_cat = st.radio("MODO", ["Pista", "Produtos"], horizontal=True)
+           
             st.markdown('<div style="height:20px"></div>', unsafe_allow_html=True)
             if st.form_submit_button("PROCESSAR TRANSAÇÃO"):
                 if f_client and f_amount > 0:
@@ -239,7 +245,7 @@ else:
                     mach = f_amount * (conf['machineTax'] / 100)
                     cst = f_bleach * conf['bleachPrice']
                     prof = f_amount - ret - mach - cst
-                    
+                   
                     db.add(Transaction(
                         family=f_client, dirty_amount=f_amount, returned_amount=ret,
                         profit=prof, category=f_cat, bleach_count=f_bleach,
@@ -249,30 +255,27 @@ else:
                     st.toast(f"Transação {f_client} registrada!", icon="✅")
                     st.rerun()
         st.markdown('</div>', unsafe_allow_html=True)
-        
+       
         if st.button("ENCERRAR TERMINAL"):
             st.session_state.user = None
             st.rerun()
-
     with col_stats:
-        # Mini Dash de Métricas
-        m1, m2, m3 = st.columns(3)
-        all_t = db.query(Transaction).all()
+        # Mini Dash de Métricas (baseado na data selecionada)
+        all_t = db.query(Transaction).filter(sa.func.date(Transaction.timestamp) == selected_date).all()
         t_dirty = sum(x.dirty_amount for x in all_t)
         t_prof = sum(x.profit for x in all_t)
         t_ret = sum(x.returned_amount for x in all_t)
-
+        m1, m2, m3 = st.columns(3)
         m1.metric("VOLUME BRUTO", f"R$ {t_dirty:,.0f}")
         m2.metric("FLUXO DE CAIXA", f"R$ {t_ret:,.0f}")
         m3.metric("LUCRO HYDRA", f"R$ {t_prof:,.0f}")
-
         st.markdown("<div style='height:20px'></div>", unsafe_allow_html=True)
-        
-        # Lista de Transações High-Tech
+       
+        # Lista de Transações High-Tech (filtrado pela data selecionada)
         st.markdown("<p style='font-size: 11px; font-weight: 800; color: #666; letter-spacing: 2px; text-transform: uppercase;'>Logs de Atividade Recente</p>", unsafe_allow_html=True)
-        
-        recentes = db.query(Transaction).order_by(Transaction.timestamp.desc()).limit(8).all()
-        
+       
+        recentes = db.query(Transaction).filter(sa.func.date(Transaction.timestamp) == selected_date).order_by(Transaction.timestamp.desc()).all()
+       
         if not recentes:
             st.markdown('<div class="hydra-card" style="text-align:center; padding: 40px; opacity:0.5;">AGUARDANDO INGESTÃO DE DADOS...</div>', unsafe_allow_html=True)
         else:
@@ -300,7 +303,7 @@ else:
                 # Botões de Ação (Apenas para quem criou ou Líder)
                 if user['role'] == 'LIDER' or user['username'] == r.created_by:
                     c_act1, c_act2, c_act3 = st.columns([1, 1, 4])
-                    
+                   
                     with c_act1:
                         with st.popover("✏️"):
                             st.markdown("### Editar Registro")
@@ -314,7 +317,7 @@ else:
                                     mach = new_dirty * (conf['machineTax'] / 100)
                                     cst = new_bleach * conf['bleachPrice']
                                     prof = new_dirty - ret - mach - cst
-                                    
+                                   
                                     db.query(Transaction).filter_by(id=r.id).update({
                                         "family": new_family, "dirty_amount": new_dirty,
                                         "bleach_count": new_bleach, "returned_amount": ret, "profit": prof
@@ -322,7 +325,7 @@ else:
                                     db.commit()
                                     st.success("Atualizado!")
                                     st.rerun()
-                    
+                   
                     with c_act2:
                         if st.button("🗑️", key=f"del_{r.id}"):
                             db.query(Transaction).filter_by(id=r.id).delete()
@@ -362,8 +365,22 @@ else:
                                 db.commit()
                                 st.success("Agente integrado ao sistema.")
                             except: st.error("Erro fatal: Agente já existente.")
+                
+                # Lista de Usuários com Opção de Deletar
+                st.markdown("<p style='font-size: 14px; font-weight: 600; margin-top: 30px;'>Agentes Ativos</p>", unsafe_allow_html=True)
+                users = db.query(User).all()
+                for u in users:
+                    if u.username != "admin" and u.username != user['username']:  # Não deletar admin ou si mesmo
+                        col_u1, col_u2 = st.columns([3, 1])
+                        with col_u1:
+                            st.write(f"{u.username.upper()} ({u.role})")
+                        with col_u2:
+                            if st.button("EXTERMINAR", key=f"del_user_{u.id}"):
+                                db.query(User).filter_by(id=u.id).delete()
+                                db.commit()
+                                st.toast("Agente eliminado do sistema.", icon="🗑️")
+                                st.rerun()
                 st.markdown('</div>', unsafe_allow_html=True)
-
     st.markdown("""
         <div style="text-align: center; padding: 40px; opacity: 0.2; font-family: 'JetBrains Mono'; font-size: 10px; letter-spacing: 10px;">
             HYDRA COFRE v1.0 // METROPOLE SECTOR 7 // END-TO-END ENCRYPTION
