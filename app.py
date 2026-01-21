@@ -205,24 +205,11 @@ else:
             </div>
         </div>
     """, unsafe_allow_html=True)
-
-selected_date_raw = st.date_input(
-    label="DATA DO REGISTRO",
-    value=datetime.today(),
-    key="data_historico"
-)
-
-# Mostra a data no formato brasileiro
-if isinstance(selected_date_raw, datetime):
-    selected_date = selected_date_raw.date()
-    st.markdown(f"""
-        <div style="font-size: 15px; color: var(--primary); font-weight: 600; margin: 10px 0;">
-            📅 {selected_date.strftime('%d/%m/%Y')}
-        </div>
-    """, unsafe_allow_html=True)
-else:
-    selected_date = selected_date_raw    
     
+
+    # Seletor de Data para Histórico
+    selected_date = st.date_input("Selecionar Data para Histórico", value=datetime.today())
+
     # Grid de Conteúdo
     col_input, col_stats = st.columns([1, 2.2])
     with col_input:
